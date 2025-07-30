@@ -2,22 +2,33 @@ import uvicorn
 from fastapi import FastAPI, Request
 from loguru import logger
 import time
+from fastapi.middleware.cors import CORSMiddleware
 
-from .core.config import settings
-from .core.logging_config import configure_logging
-from .core.tracing_config import configure_tracing
-from .api import api_router  # Simplified import
+from . import core
+from . import api
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 # Configure logging and tracing before creating the app instance
-configure_logging()
-configure_tracing()
+core.configure_logging()
+core.configure_tracing()
 
 app = FastAPI(
-    title=settings.APP_NAME,
+    title=core.settings.APP_NAME,
     version="1.0.0",
     docs_url="/docs",
     redoc_url=None, # Disable redoc
+)
+
+# ===============================================
+# Middleware
+# ===============================================
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=core.settings.ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Instrument FastAPI with OpenTelemetry
@@ -44,14 +55,20 @@ async def log_requests(request: Request, call_next):
     
     return response
 
-app.include_router(api_router, prefix="/api")
+# ===============================================
+# API Routes
+# ===============================================
+app.include_router(api.api_router, prefix="/api")
 
 @app.get("/", tags=["Root"])
 async def read_root():
     """A welcome message for the root endpoint."""
     logger.info("Root endpoint was hit.")
-    return {"message": f"Welcome to {settings.APP_NAME}"}
+    return {"message": f"Welcome to {core.settings.APP_NAME}"}
 
+# ===============================================
+# Server Runners
+# ===============================================
 def run_dev_server():
     """
     Run the Uvicorn server for development.

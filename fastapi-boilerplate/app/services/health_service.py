@@ -1,7 +1,7 @@
 from loguru import logger
 from opentelemetry import trace
 
-from app import types
+from app import schemas
 
 tracer = trace.get_tracer(__name__)
 
@@ -11,7 +11,7 @@ class HealthService:
     """
 
     @staticmethod
-    async def get_health_status() -> types.HealthStatus:
+    async def get_health_status() -> schemas.HealthStatus:
         """
         Checks the application's health and returns its status.
 
@@ -21,6 +21,6 @@ class HealthService:
         with tracer.start_as_current_span("health_service_check") as span:
             logger.info("Performing health check in service layer.")
             # For now, we return a simple "ok" status.
-            health = types.HealthStatus(status="ok")
+            health = schemas.HealthStatus(status="ok")
             span.set_attribute("service.health.status", health.status)
             return health

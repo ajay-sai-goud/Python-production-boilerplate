@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from loguru import logger
 from opentelemetry import trace
 
-from app import types
+from app import schemas
 from app import services
 
 api_router = APIRouter()
@@ -14,11 +14,11 @@ tracer = trace.get_tracer(__name__)
 # ===============================================
 @api_router.get(
     "/health", 
-    response_model=types.HealthStatus, 
+    response_model=schemas.HealthStatus, 
     status_code=status.HTTP_200_OK, 
     tags=["Health"]
 )
-async def health_check(health_service: services.HealthService = Depends()) -> types.HealthStatus:
+async def health_check(health_service: services.HealthService = Depends()) -> schemas.HealthStatus:
     """
     Endpoint to check the health of the application.
     It delegates the actual health check logic to the HealthService.
@@ -32,14 +32,14 @@ async def health_check(health_service: services.HealthService = Depends()) -> ty
 # ===============================================
 @api_router.post(
     "/users",
-    response_model=types.UserDisplay,
+    response_model=schemas.UserDisplay,
     status_code=status.HTTP_201_CREATED,
     tags=["Users"]
 )
 async def create_user(
-    user: types.UserCreate, 
+    user: schemas.UserCreate, 
     user_service: services.UserService = Depends()
-) -> types.UserDisplay:
+) -> schemas.UserDisplay:
     """
     Endpoint to create a new user.
     """

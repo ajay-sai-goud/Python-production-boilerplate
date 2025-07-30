@@ -3,7 +3,7 @@ from loguru import logger
 from opentelemetry import trace
 from fastapi import HTTPException, status
 
-from app import types
+from app import schemas
 from app import functions
 from app import utils
 
@@ -19,7 +19,7 @@ class UserService:
     Service layer for handling user-related business logic.
     """
 
-    async def create_user(self, user_data: types.UserCreate) -> types.UserDisplay:
+    async def create_user(self, user_data: schemas.UserCreate) -> schemas.UserDisplay:
         """
         Creates a new user after validating the username.
         """
@@ -57,7 +57,7 @@ class UserService:
             span.set_attribute("user.id", new_user["id"])
             logger.info(f"User '{new_user['username']}' created successfully with ID {new_user['id']}.")
 
-            return types.UserDisplay(
+            return schemas.UserDisplay(
                 id=new_user["id"],
                 username=new_user["username"],
                 created_at=formatted_timestamp

@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from enum import Enum
-from typing import Optional
+from typing import Optional, List
 
 class LogLevel(str, Enum):
     DEBUG = "DEBUG"
@@ -21,10 +21,13 @@ class Settings(BaseSettings):
     OTEL_EXPORTER_OTLP_ENDPOINT: Optional[str] = None
     OTEL_DEBUG_LOG_SPANS: bool = False
 
+    # CORS configuration
+    ALLOWED_ORIGINS: List[str] = ["http://localhost:3000"]
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding='utf-8',
         case_sensitive=False,
     )
 
-settings = Settings() 
+settings = Settings()
