@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  lambda-boilerplate
+
+  SAM template for deploying the Lambda boilerplate application.
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 128
+    Runtime: python3.11
+    Architectures:
+      - x86_64
+
+Resources:
+  MyLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: MyLambdaBoilerplateFunction
+      CodeUri: src/
+      Handler: app.handler
+      Description: A boilerplate Lambda function with structured logging.
+      Environment:
+        Variables:
+          APP_NAME: "MyLambdaApp"
+          LOG_LEVEL: "INFO"
+          JSON_LOGS: "False"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  MyLambdaFunctionArn:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt MyLambdaFunction.Arn
+  MyLambdaFunctionIamRoleArn:
+    Description: "Implicit IAM Role created for the Lambda function"
+    Value: !GetAtt MyLambdaFunctionRole.Arn
+

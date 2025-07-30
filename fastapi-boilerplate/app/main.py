@@ -6,7 +6,7 @@ import time
 from .core.config import settings
 from .core.logging_config import configure_logging
 from .core.tracing_config import configure_tracing
-from .api.routes import api_router
+from .api import api_router  # Simplified import
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 # Configure logging and tracing before creating the app instance
@@ -55,8 +55,6 @@ async def read_root():
 def run_dev_server():
     """
     Run the Uvicorn server for development.
-    This function is referenced in pyproject.toml's [project.scripts].
-    It enables auto-reloading.
     """
     logger.info("Starting development server... (reload enabled)")
     uvicorn.run(
@@ -64,14 +62,12 @@ def run_dev_server():
         host="0.0.0.0",
         port=8000,
         reload=True,
-        log_config=None,  # We use our own Loguru config
+        log_config=None,
     )
 
 def run_prod_server():
     """
     Run the Uvicorn server for production.
-    This function is referenced in pyproject.toml's [project.scripts].
-    It disables auto-reloading and runs with multiple workers.
     """
     logger.info("Starting production server... (reload disabled, 4 workers)")
     uvicorn.run(
@@ -80,5 +76,5 @@ def run_prod_server():
         port=8000,
         reload=False,
         workers=4,
-        log_config=None,  # We use our own Loguru config
-    ) 
+        log_config=None,
+    )

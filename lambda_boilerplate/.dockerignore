@@ -1,0 +1,34 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Python virtual environment
+.venv
+venv
+env
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local development config
+.vscode/
+.idea/
+
+# Environment files
+.env
+*.env
+
+# Testing files
+tests/
+test_event.json
+pytest.ini
+
+# SAM build artifacts
+.aws-sam/
